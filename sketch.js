@@ -36,31 +36,33 @@ class Button {
   }
 }
 
-let isPlayer1First = true; // 預設為 true（予晴先攻）
+let isPlayer1First = true; // 預設為 true（A玩家先攻）
 let 流程 = 0;
 let 藏起來 = [];
 let 比賽牌 = [];
-let myText = "請予晴將左手邊的一張牌藏起來!";
+let myText = "請A玩家將左手邊的一張牌藏起來!";
 let myLog;
 let circleProdctor;
 let score1 = 0;
 let score2 = 0;
-let canvasW = windowWidth*0.93;
-let canvasH = 500;
+let canvasW = 500;
+let canvasH = 450;
 function setup() {
+  canvasW = windowWidth * 0.9;
+  console.log(canvasW,canvasH)
   createCanvas(canvasW, canvasH);
-  stone1 = new Button(10, 100, 120, 60, "石頭!", Cstone1);
-  scissors1 = new Button(10, 170, 120, 60, "剪刀!", Cscissors1);
-  paper1 = new Button(10, 240, 120, 60, "布!", Cpaper1);
-  stone2 = new Button(canvasW - 180, 100, 120, 60, "石頭!", Cstone2);
-  scissors2 = new Button(canvasW - 180, 170, 120, 60, "剪刀!", Cscissors2);
-  paper2 = new Button(canvasW - 180, 240, 120, 60, "布!", Cpaper2);
+  stone1 = new Button(10, 100, canvasW * 0.22, 60, "石頭!", Cstone1);
+  scissors1 = new Button(10, 170, canvasW * 0.22, 60, "剪刀!", Cscissors1);
+  paper1 = new Button(10, 240, canvasW * 0.22, 60, "布!", Cpaper1);
+  stone2 = new Button(canvasW *0.7, 100, canvasW * 0.22, 60, "石頭!", Cstone2);
+  scissors2 = new Button(canvasW *0.7, 170, canvasW * 0.22, 60, "剪刀!", Cscissors2);
+  paper2 = new Button(canvasW *0.7, 240, canvasW * 0.22, 60, "布!", Cpaper2);
   clearButton = new Button(
-    canvasW - 90,
+    canvasW * 0.6,
     10,
-    80,
+    canvasW * 0.18,
     40,
-    "重置遊戲!",
+    "重置桌面!",
     checkClear
   );
 
@@ -88,8 +90,8 @@ function draw() {
   myLog.text(myText, 5, 5);
   image(myLog, 0, canvasH - myLog.height);
   fill("yellow");
-  let Tscore = "予晴: " + score1 + "\n爸爸: " + score2;
-  text(Tscore, canvasW - 100, canvasH - 20);
+  let Tscore = "A玩家: " + score1 + "\nB玩家: " + score2;
+  text(Tscore, canvasW *0.9, canvasH *0.95);
 }
 
 function mouseClicked() {
@@ -113,8 +115,8 @@ function mouseClicked() {
 function process0() {
   流程++;
   myText = isPlayer1First
-    ? "請爸爸將右手邊的一張牌藏起來!"
-    : "請予晴將右手邊的一張牌藏起來!";
+    ? "請B玩家將右手邊的一張牌藏起來!"
+    : "請A玩家將右手邊的一張牌藏起來!";
 }
 
 function process1() {
@@ -122,7 +124,7 @@ function process1() {
   scissors1.visible = false;
   stone1.visible = false;
   paper1.visible = false;
-  myText = isPlayer1First ? "請予晴選一張牌!" : "請爸爸選一張牌";
+  myText = isPlayer1First ? "請A玩家選一張牌!" : "請B玩家選一張牌";
 }
 
 function process2() {
@@ -133,7 +135,7 @@ function process2() {
   scissors1.visible = true;
   paper1.visible = true;
   藏起來[0].visible = false;
-  myText = isPlayer1First ? "請爸爸選一張牌!" : "請予晴選一張牌";
+  myText = isPlayer1First ? "請B玩家選一張牌!" : "請A玩家選一張牌";
   流程++;
 }
 
@@ -157,10 +159,10 @@ function process3() {
     (p1 === "布!" && p2 === "石頭!")
   ) {
     score1++;
-    myText = "予晴獲勝！";
+    myText = "A玩家獲勝！";
   } else {
     score2++;
-    myText = "爸爸獲勝！";
+    myText = "B玩家獲勝！";
   }
 
   流程 = 4;
@@ -241,8 +243,8 @@ function checkClear() {
   藏起來 = [];
   比賽牌 = [];
   myText = isPlayer1First
-    ? "請爸爸將左手邊的一張牌藏起來!"
-    : "請予晴將左手邊的一張牌藏起來!";
+    ? "請B玩家將左手邊的一張牌藏起來!"
+    : "請A玩家將左手邊的一張牌藏起來!";
   // 切換先攻方
   isPlayer1First = !isPlayer1First;
   stone1.visible = true;
