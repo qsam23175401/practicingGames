@@ -45,10 +45,11 @@ let myLog;
 let circleProdctor;
 let score1 = 0;
 let score2 = 0;
-let canvasW = 500;
+let canvasWidth = 500;
 let canvasH = 450;
 function setup() {
-  canvasW = windowWidth * 0.9;
+  let canvasW = windowWidth * 0.9;
+  canvasWidth = canvasW;
   createCanvas(canvasW, canvasH);
   stone1 = new Button(10, 100, canvasW * 0.22, 60, "石頭!", Cstone1);
   scissors1 = new Button(10, 170, canvasW * 0.22, 60, "剪刀!", Cscissors1);
@@ -90,7 +91,7 @@ function draw() {
   image(myLog, 0, canvasH - myLog.height);
   fill("yellow");
   let Tscore = "A玩家: " + score1 + "\nB玩家: " + score2;
-  text(Tscore, canvasW *0.9, canvasH *0.95);
+  text(Tscore, canvasWidth *0.9, canvasH *0.95);
 }
 
 function mouseClicked() {
