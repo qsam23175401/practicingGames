@@ -45,16 +45,18 @@ let myLog;
 let circleProdctor;
 let score1 = 0;
 let score2 = 0;
+let canvasW = windowWidth*0.93;
+let canvasH = 500;
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(canvasW, canvasH);
   stone1 = new Button(10, 100, 120, 60, "石頭!", Cstone1);
   scissors1 = new Button(10, 170, 120, 60, "剪刀!", Cscissors1);
   paper1 = new Button(10, 240, 120, 60, "布!", Cpaper1);
-  stone2 = new Button(windowWidth - 180, 100, 120, 60, "石頭!", Cstone2);
-  scissors2 = new Button(windowWidth - 180, 170, 120, 60, "剪刀!", Cscissors2);
-  paper2 = new Button(windowWidth - 180, 240, 120, 60, "布!", Cpaper2);
+  stone2 = new Button(canvasW - 180, 100, 120, 60, "石頭!", Cstone2);
+  scissors2 = new Button(canvasW - 180, 170, 120, 60, "剪刀!", Cscissors2);
+  paper2 = new Button(canvasW - 180, 240, 120, 60, "布!", Cpaper2);
   clearButton = new Button(
-    windowWidth - 90,
+    canvasW - 90,
     10,
     80,
     40,
@@ -63,13 +65,13 @@ function setup() {
   );
 
   background(100);
-  myLog = createGraphics(windowWidth, 100);
+  myLog = createGraphics(canvasW, 100);
   myLog.background(180);
   myLog.fill(100, 20, 40); // 設定文字顏色
   myLog.textSize(22); // 設定文字大小
   myLog.textAlign(LEFT, TOP); // 置中對齊
   myLog.text(myText, 5, 5); // 在中間顯示文字
-  image(myLog, 0, windowHeight - myLog.height);
+  image(myLog, 0, canvasH - myLog.height);
   noLoop();
 }
 
@@ -84,10 +86,10 @@ function draw() {
   clearButton.display(220, 125, 45, 230);
   myLog.background(180);
   myLog.text(myText, 5, 5);
-  image(myLog, 0, windowHeight - myLog.height);
+  image(myLog, 0, canvasH - myLog.height);
   fill("yellow");
   let Tscore = "予晴: " + score1 + "\n爸爸: " + score2;
-  text(Tscore, windowWidth - 100, windowHeight - 20);
+  text(Tscore, canvasW - 100, canvasH - 20);
 }
 
 function mouseClicked() {
