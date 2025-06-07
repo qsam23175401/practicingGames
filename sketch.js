@@ -49,7 +49,6 @@ let canvasW = 500;
 let canvasH = 450;
 function setup() {
   canvasW = windowWidth * 0.9;
-  console.log(canvasW,canvasH)
   createCanvas(canvasW, canvasH);
   stone1 = new Button(10, 100, canvasW * 0.22, 60, "石頭!", Cstone1);
   scissors1 = new Button(10, 170, canvasW * 0.22, 60, "剪刀!", Cscissors1);
