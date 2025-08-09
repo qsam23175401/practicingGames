@@ -50,7 +50,8 @@ let canvasH = 450;
 function setup() {
   let canvasW = windowWidth * 0.9;
   canvasWidth = canvasW;
-  createCanvas(canvasW, canvasH);
+  let cnv = createCanvas(canvasW, canvasH);
+  cnv.parent('gameContainer'); // 將畫布放入 #gameContainer div 中
   stone1 = new Button(10, 100, canvasW * 0.22, 60, "石頭!", Cstone1);
   scissors1 = new Button(10, 170, canvasW * 0.22, 60, "剪刀!", Cscissors1);
   paper1 = new Button(10, 240, canvasW * 0.22, 60, "布!", Cpaper1);
@@ -261,3 +262,4 @@ function checkClear() {
   }
   redraw();
 }
+
