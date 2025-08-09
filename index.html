@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
   <head>
     <meta charset="utf-8" />
     <title>p5.js 練習小遊戲區</title>
@@ -11,6 +11,12 @@
         margin: 0;
         background-color: #f0f0f0;
         font-family: "Arial", sans-serif;
+        align-items: center; /* 水平置中 */
+      }
+      #gameContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
       h1 {
         text-align: center;
@@ -22,4 +28,6 @@
   <body>
     <h1>以下是簡單的猜拳遊戲</h1>
   </body>
+  <div id="gameContainer"></div>
 </html>
+
