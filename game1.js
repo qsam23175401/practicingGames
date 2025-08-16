@@ -53,10 +53,10 @@ const sketch = (p) => {
   let canvasWidth = 500;
   let canvasH = 450;
 
-  let stone1, scissors1, paper1, stone2, scissors2, paper2, clearButton;
-
+  let stone1, scissors1, paper1, stone2, scissors2, paper2, clearButton,scoreTo0Btn;
   p.setup = function () {
-    let canvasW = p.windowWidth * 0.9;
+    //位置，文字
+    let canvasW = Math.min(730,p.windowWidth * 0.9);
     canvasWidth = canvasW;
     let cnv = p.createCanvas(canvasW, canvasH);
     cnv.parent("gameCanvas");
@@ -70,6 +70,7 @@ const sketch = (p) => {
     paper2 = new Button(canvasW * 0.7, 240, canvasW * 0.22, 60, "布!", Cpaper2);
 
     clearButton = new Button(canvasW * 0.6, 10, canvasW * 0.18, 40, "重置桌面!", checkClear);
+    scoreTo0Btn = new Button(canvasW * 0.2, 10, canvasW * 0.18, 40, "分數歸零", scoreTo0);
 
     p.background(100);
     myLog = p.createGraphics(canvasW, 100);
@@ -84,6 +85,7 @@ const sketch = (p) => {
   };
 
   p.draw = function () {
+    //各種顏色
     p.background(100);
     stone1.display(120, 125, 45, 230);
     scissors1.display(120, 225, 45, 230);
@@ -92,6 +94,7 @@ const sketch = (p) => {
     scissors2.display(120, 225, 45, 230);
     paper2.display(220, 125, 45, 230);
     clearButton.display(220, 125, 45, 230);
+    scoreTo0Btn.display(220, 125, 45, 230);
 
     myLog.background(180);
     myLog.text(myText, 5, 5);
@@ -117,6 +120,7 @@ const sketch = (p) => {
       paper1.handleClick(p.mouseX, p.mouseY);
     }
     clearButton.handleClick(p.mouseX, p.mouseY);
+    scoreTo0Btn.handleClick(p.mouseX, p.mouseY);
     p.redraw();
   };
 
@@ -264,10 +268,20 @@ const sketch = (p) => {
     paper2.visible = true;
     p.clear();
     p.background(100);
-    if (p.abs(score1 - score2) >= 3) {
+    if (p.abs(score1 - score2) >= 5) {
       score1 = 0;
       score2 = 0;
     }
     p.redraw();
+  }
+//內部按鈕使用
+  function scoreTo0(){
+    score1 = 0;
+    score2 = 0;
+  }
+//外部能以myp5.scoreTo0呼叫
+  p.scoreTo0= function(){
+    score1 = 0;
+    score2 = 0;
   }
 };
