@@ -1,39 +1,72 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="utf-8" />
-    <title>p5.js 練習遊戲區</title>
-    <!-- 載入 p5.js 函式庫（核心程式庫） -->
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
-    <script src="sketch.js"></script>
-    <style>
-      body {
-        margin: 0;
-        background-color: #f0f0f0; /*白色背景*/
-        font-family: "Arial", sans-serif;
-        align-items: center; /* 水平置中 */
-      }
-      #gameContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      h1 {
-        text-align: center;
-        color: darkblue;
-        margin-top: 20px; /*上方留一點點白*/
-      }
-    </style>
-  </head>
-  <body>
-    <div id="gameContainer">
-      這裡是畫布的位置
-    </div>
-    <h1>以上是練習的猜拳遊戲</h1>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <title>p5.js 練習遊戲區</title>
+  <!-- 載入 p5.js 函式庫（核心程式庫） -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  <script src="game1.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #a7d886;
+      /*白色背景*/
+      font-family: "Arial", sans-serif;
+      align-items: center;
+      /* 水平置中 */
+    }
+
+    #gameCanvas {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: normal;
+      text-align: center;
+      color: rgb(158, 6, 164);
+      margin-top: 20px;
+      /*上方留一點點白*/
+    }
+
+    .btn {
+      font-size: 1em;
+      /* 讓按鈕字體跟 h1 差不多大 */
+      font-weight: bold;
+      background-color: transparent;
+      /* 背景透明 */
+      border: none;
+      /* 去掉邊框 */
+      color: rgb(158, 6, 164);
+      /* 預設字體顏色 */
+      cursor: pointer;
+      /* 滑鼠移過去顯示手型 */
+    }
+
+    .btn:hover {
+      color: rgb(224, 115, 26);
+      /* 滑鼠移過去變色 */
+    }
+  </style>
+</head>
+
+<body>
+  <h1>請點擊
+    <button id="startBtn" class="btn" type="button">開啟遊戲</button>
+    <script>
+      document.getElementById("startBtn").addEventListener("click", () => {
+        if (!myp5) {
+          myp5 = new p5(sketch);
+        }
+      });
+    </script>
+  </h1>
+  <div id="gameCanvas">
+    這裡是畫布的位置
+  </div>
+</body>
+
 </html>
-
-
-
-
-
