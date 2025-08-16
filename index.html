@@ -56,17 +56,23 @@
 <body>
   <h1>請點擊
     <button id="startBtn" class="btn" type="button">開啟遊戲</button>
+    <button id="scoreTo0" class="btn" type="button">分數歸零</button>
     <script>
       document.getElementById("startBtn").addEventListener("click", () => {
         if (!myp5) {
           myp5 = new p5(sketch);
         }
       });
+      document.getElementById("scoreTo0").addEventListener("click", () => {
+        //只能透過函式修改內部數值，避免彼此汙染
+        myp5.scoreTo0();
+      })
     </script>
   </h1>
   <div id="gameCanvas">
     這裡是畫布的位置
   </div>
+
 </body>
 
 </html>
