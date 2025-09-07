@@ -4,6 +4,7 @@ let picIndex = 0; //從零開始
 let started = false;
 let picSize = [];//picSize[picIndex][0]=width
 let piecePos = [];//piecePos[0]="0" 零號拼圖
+let initialized = false;
 
 //宣告系統文件
 const playArea = document.getElementById("playArea")
@@ -137,13 +138,14 @@ function justfyPic(i) {
 
 async function initialize() {
     setDifficulty(1);
-    sysText("圖片載入中，請稍後",false)
+    sysText("圖片載入中，請稍後", false)
     for (let i = 0; i < NumOfPics; i++) {
         await imgSize(targetPic(i), i); //疑似圖片量多，要好好等存完再調整大小
         justfyPic(i); //修改大小後就拿不到原始的大小
     }
     showPic(picIndex);
     sysText("圖片載入完成")
+    initialized = true;
 }
 
 
@@ -238,7 +240,9 @@ hintBtn.addEventListener("click", () => {
 })
 
 shiftBtn.addEventListener("click", () => {
-    if (started) {
+    if (!initialized) {
+        sysText("請稍等圖片載入", false)
+    } else if (started) {
         sysText("遊戲進行中不能切換");
         return;
     } else {
@@ -250,7 +254,9 @@ shiftBtn.addEventListener("click", () => {
 })
 
 startBtn.addEventListener("click", () => {
-    if (!started) {
+    if (!initialized) {
+        sysText("請稍等圖片載入", false)
+    } else if (!started) {
         pxpy = difficulty.lv.px(difficulty.lv.value) * difficulty.lv.py(difficulty.lv.value);
         setWandH(playAreaWidth.value, playAreaWidth.value / 1.25);
         create_myGame();
@@ -275,7 +281,9 @@ startBtn.addEventListener("click", () => {
 })
 
 resetBtn.addEventListener("click", () => {
-    if (started) {
+    if (!initialized) {
+        sysText("請稍等圖片載入", false)
+    } else if (started) {
         started = false;
         showPic(picIndex);
         choosed = 0;
