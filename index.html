@@ -2,77 +2,72 @@
 <html lang="zh-TW">
 
 <head>
-  <meta charset="utf-8" />
-  <title>p5.js 練習遊戲區</title>
-  <!-- 載入 p5.js 函式庫（核心程式庫） -->
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
-  <script src="game1.js"></script>
-  <style>
-    body {
-      margin: 0;
-      background-color: #a7d886;
-      /*白色背景*/
-      font-family: "Arial", sans-serif;
-      align-items: center;
-      /* 水平置中 */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="entry.css">
+    <title>小遊戲練習區</title>
 
-    #gameCanvas {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    h1 {
-      font-size: 24px;
-      font-weight: normal;
-      text-align: center;
-      color: rgb(158, 6, 164);
-      margin-top: 20px;
-      /*上方留一點點白*/
-    }
-
-    .btn {
-      font-size: 1em;
-      /* 讓按鈕字體跟 h1 差不多大 */
-      font-weight: bold;
-      background-color: transparent;
-      /* 背景透明 */
-      border: none;
-      /* 去掉邊框 */
-      color: rgb(158, 6, 164);
-      /* 預設字體顏色 */
-      cursor: pointer;
-      /* 滑鼠移過去顯示手型 */
-    }
-
-    .btn:hover {
-      color: rgb(224, 115, 26);
-      /* 滑鼠移過去變色 */
-    }
-  </style>
 </head>
 
-<body>
-  <h1>請點擊
-    <button id="startBtn" class="btn" type="button">開啟遊戲</button>
-    <button id="scoreTo0" class="btn" type="button">分數歸零</button>
-    <script>
-      document.getElementById("startBtn").addEventListener("click", () => {
-        if (!myp5) {
-          myp5 = new p5(sketch);
-        }
-      });
-      document.getElementById("scoreTo0").addEventListener("click", () => {
-        //只能透過函式修改內部數值，避免彼此汙染
-        myp5.scoreTo0();
-      })
-    </script>
-  </h1>
-  <div id="gameCanvas">
-    這裡是畫布的位置
-  </div>
+<style>
+    body {
+        font-family: sans-serif;
+        margin: 0;
+    }
 
+    main {
+        display: flex;
+        flex: 1;
+    }
+
+    nav {
+        width: 200px;
+        background: rgb(66, 160, 26);
+        padding: 0.5rem;
+
+    }
+
+    nav button {
+        display: block;
+        width: 80%;
+        height: 6%;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        cursor: pointer;
+        background-color: #19760d;
+    }
+
+    section {
+        flex: 1;
+        background-color: rgb(66, 160, 26);
+    }
+
+    iframe {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 4);
+    }
+</style>
+
+<body>
+    <main>
+        <nav>
+            <button onclick="loadGame('intro.html')">首頁</button>
+            <button onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
+            <button onclick="loadGame('game2/practice.html')">猜拳練習版</button>
+        </nav>
+
+        <section>
+            <iframe id="gameFrame" src="intro.html"></iframe>
+        </section>
+    </main>
+
+    <script>
+        function loadGame(url) {
+            document.getElementById('gameFrame').src = url;
+        }
+    </script>
 </body>
 
 </html>

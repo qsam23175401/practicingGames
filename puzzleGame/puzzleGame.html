@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8">
+    <title>簡單拼圖遊戲</title>
+    <link rel="stylesheet" href="拼圖遊戲樣式表.css">
+    <!-- 載入 p5.js 函式庫（核心程式庫） -->
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <script src="拼圖遊戲畫布.js"></script>
+</head>
+
+
+<body>
+    <!-- 設定難度區 -->
+    <div>
+        <button id="difficulty" class="buttons" type="button">點選切換難度</button>
+        <p id="difficultyText"></p>
+    </div>
+
+    <!-- 遊戲區，圖片及畫布 -->
+    <div class="AppBody">
+        <div id="playArea" class="playArea">
+            <img id="pic0" class="pictures" src="lions.png" alt="獅子拼圖現在似乎無法開啟">
+            <img id="pic1" class="pictures" src="cats.png" alt="貓咪拼圖現在似乎無法開啟">
+            <img id="pic2" class="pictures" src="pokemon1.png" alt="寶可夢拼圖現在似乎無法開啟">
+            <img id="pic3" class="pictures" src="pokemon2.png" alt="寶可夢拼圖現在似乎無法開啟">
+            <img id="pic4" class="pictures" src="hellokitty1.png" alt="kitty拼圖現在似乎無法開啟">
+            <canvas id="playBgd" class="playBgd"></canvas>
+        </div>
+    </div>
+    <!-- 系統文字區 -->
+    <p id="systemText"></p>
+
+    <!-- 遊戲按鈕區 -->
+    <div class="buttonArea">
+        <button id="startBtn" class="buttons" type="button">選擇並開始拼圖</button>
+        <button id="shiftBtn" class="buttons" type="button">切換拼圖</button>
+        <button id="resetBtn" class="buttons" type="button">重置拼圖</button>
+        <button id="hintBtn" class="buttons" type="button">提示</button>
+    </div>
+
+    <!-- 大小調整區 -->
+    <div class="playAreaWidth">
+        <input id="playAreaWidth" class="playAreaWidth" name="playAreaWidth" type="range" min="400" max="800"
+            value="400" step="40">
+            <label class="playAreaWidth" for="playAreaWidth">拉動調整　小 → 大</label>
+        </div>
+
+    <!-- JS code -->
+    <script src = "拼圖遊戲主程式碼.js"></script>
+</body>
+
+</html>

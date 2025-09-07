@@ -1,0 +1,131 @@
+body {
+  /*整體背景*/
+  background-color: rgb(66, 160, 26);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* 水平置中 */
+}
+
+.buttonArea {
+  /*四個按鈕*/
+  display: flex;
+}
+
+#difficultyText {
+  /*拼圖難度文字*/
+  margin: 2px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.buttons {
+  /*每個按鈕*/
+  font-size: 18px;
+  height: 40px;
+  border: 0.1rem solid;
+  border-color: rgb(7, 95, 95);
+  cursor: pointer;
+  background-color: rgb(0, 128, 60);
+  margin: 15px;
+  background-color: none;
+  border-radius: 15px;
+}
+
+.buttons:hover {
+  transition: 0.4s;
+  background-color: rgb(188, 124, 72);
+  font-size: 22px;
+}
+
+.AppBody {
+  /*畫布後背景*/
+  background-color: rgb(133, 82, 176);
+  margin-top: 30px;
+
+  border-radius: 12px;
+  border-color: rgb(108, 21, 106);
+
+  display: flex;
+}
+
+/*遊戲區畫布*/
+.playArea {
+  display: flex;
+  padding: 13px;
+  border: 0.1rem solid;
+  border-radius: 12px;
+  border-color: rgb(70, 13, 127);
+  width: 400px;
+  height: 320px;
+}
+
+/* 照片 */
+.pictures {
+  position: absolute;
+  /*可以重疊*/
+  z-index: 2;
+  border: 0.1rem solid;
+  border-color: rgb(0, 0, 0);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  margin: 0px auto;
+}
+
+/*畫布預設*/
+#playBgd {
+  background-color: rgb(220, 250, 0);
+  position: absolute;
+  width: 400px;
+  height: 320px;
+  z-index: 1;
+  border: 0.1rem solid;
+  border-color: rgb(0, 0, 0);
+  border-radius: 12px;
+  margin: 0px auto;
+}
+
+
+.playAreaWidth {/*flex會壓縮時可以這樣替代*/
+  /*大小調整區*/
+  display: block;
+  text-align: center;
+  width: 300px;
+
+  font-size: 20px;
+  font-weight: bold;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 30px;
+}
+
+#playAreaWidth::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  border: 0.1rem solid #1d0a47;
+  background: #2e8036;
+  border-radius: 12px;
+}
+
+#playAreaWidth::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* 這裡一定要再加 */
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: rgb(10, 95, 35);
+  border-radius: 50%;
+  border: 0.1rem solid rgb(2, 54, 44);
+  margin-top: -1.3px;
+  /* 調整 thumb 在 track 上的對齊 */
+  cursor: grab;
+}
