@@ -24,7 +24,7 @@ body {
 .buttons {
   /*每個按鈕*/
   font-size: 18px;
-  height: 40px;
+  height: 40px auto; /*才會自己調整寬高*/
   border: 0.1rem solid;
   border-color: rgb(7, 95, 95);
   cursor: pointer;
