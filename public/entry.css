@@ -45,7 +45,7 @@ h1 {
     border: none;
     background-color: transparent;
     margin-right: 3px;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 main {
@@ -94,7 +94,7 @@ iframe {
     }
 
     nav {
-        width: 100%;
+        width: auto;
         /* nav 撐滿螢幕上方 */
         min-height: fit-content;
         display: flex;

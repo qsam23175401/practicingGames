@@ -7,10 +7,23 @@
     <link rel="stylesheet" href="entry.css">
     <title>魔法師學院入口網站</title>
 
-    <script>
+    <script type="module">
         // Import the functions you need from the SDKs you need
-        import { initializeApp } from "firebase/app";
-        import { getAnalytics } from "firebase/analytics";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -28,7 +41,48 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const loginBtn = document.getElementById("loginBtn")
+        const loginText = document.getElementById("loginText");
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // user 物件範例： user.uid, user.email, user.displayName
+
+                loginBtn.textContent = `登出 (${user.displayName || user.email})`;
+                // 將使用者資料寫到 Firestore（若不存在則建立）-----------------------尚未實作或建立
+                await ensureUserDoc(user.uid, user.displayName || user.email);
+            } else {
+                loginBtn.textContent = "登入或註冊";
+            }
+        });
+
+
+
+        loginText.addEventListener("click", () => {
+            loginText.textContent += ` ${user.displayName}`;
+        });
+
+        loginBtn.addEventListener("click", async () => {
+            if (auth.currentUser) {
+                // 已登入 -> 登出
+                await signOut(auth);
+                alert("已登出");
+            } else {
+                // 未登入 -> 開 Google popup
+                const provider = new GoogleAuthProvider();
+                try {
+                    await signInWithPopup(auth, provider);
+                } catch (err) {
+                    console.error("登入失敗：", err);
+                    alert("登入失敗，請看 console");
+                }
+            }
+        });
+
+
+
     </script>
 
 </head>
@@ -49,20 +103,7 @@
             <button onclick="loadGame('intro.html')">首頁</button>
             <button onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
             <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
-            <button>測試</button>
+
         </nav>
 
         <section>
@@ -70,10 +111,13 @@
         </section>
     </main>
 
-    <script>
+    <script type="module">
         function loadGame(url) {
             document.getElementById('gameFrame').src = url;
         }
+
+
+
     </script>
 </body>
 
