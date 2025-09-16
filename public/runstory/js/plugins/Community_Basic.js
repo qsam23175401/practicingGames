@@ -66,7 +66,7 @@
  * @default off
  */
 
-(function() {
+(function () {
     function toNumber(str, def) {
         return isNaN(str) ? def : +(str || def);
     }
@@ -74,9 +74,17 @@
     var parameters = PluginManager.parameters('Community_Basic');
     var cacheLimit = toNumber(parameters['cacheLimit'], 10);
 
-    //僅接受整數傳入，先讓它不要超過
-    var screenWidth = toNumber(/*parameters['screenWidth']*/Math.min(parseInt(window.innerWidth),816), 816);
-    var screenHeight = toNumber(/*parameters['screenHeight']*/Math.min(parseInt(window.innerHeight),624), 624);
+ /*根據螢幕比例控制寬高比，記得把以下打開
+Graphics.initialize = function (width, height, type) {
+this._stretchEnabled = true;//this._defaultStretchMode();
+}*/
+    var screenWidth = 816;
+    var screenHeight = 624;
+
+    if (window.innerHeight / window.innerWidth <= 0.625 || window.innerHeight / window.innerWidth >= 1.6) {
+        screenHeight = 510;
+    }
+
     var renderingMode = parameters['renderingMode'].toLowerCase();
     var alwaysDash = parameters['alwaysDash'].toLowerCase() === 'on';
     var windowWidthTo = toNumber(parameters['changeWindowWidthTo'], 0);
@@ -84,18 +92,17 @@
     var windowWidth;
     var windowHeight;
 
-    if(windowWidthTo){
+    if (windowWidthTo) {
         windowWidth = windowWidthTo;
-    }else if(screenWidth !== SceneManager._screenWidth){
+    } else if (screenWidth !== SceneManager._screenWidth) {
         windowWidth = screenWidth;
     }
 
-    if(windowHeightTo){
+    if (windowHeightTo) {
         windowHeight = windowHeightTo;
-    }else if(screenHeight !== SceneManager._screenHeight){
+    } else if (screenHeight !== SceneManager._screenHeight) {
         windowHeight = screenHeight;
     }
-
 
     ImageCache.limit = cacheLimit * 1000 * 1000;
     SceneManager._screenWidth = screenWidth;
@@ -103,7 +110,7 @@
     SceneManager._boxWidth = screenWidth;
     SceneManager._boxHeight = screenHeight;
 
-    SceneManager.preferableRendererType = function() {
+    SceneManager.preferableRendererType = function () {
         if (Utils.isOptionValid('canvas')) {
             return 'canvas';
         } else if (Utils.isOptionValid('webgl')) {
@@ -118,7 +125,7 @@
     };
 
     var _ConfigManager_applyData = ConfigManager.applyData;
-    ConfigManager.applyData = function(config) {
+    ConfigManager.applyData = function (config) {
         _ConfigManager_applyData.apply(this, arguments);
         if (config['alwaysDash'] === undefined) {
             this.alwaysDash = alwaysDash;
@@ -127,7 +134,7 @@
 
 
     var _SceneManager_initNwjs = SceneManager.initNwjs;
-    SceneManager.initNwjs = function() {
+    SceneManager.initNwjs = function () {
         _SceneManager_initNwjs.apply(this, arguments);
 
         if (Utils.isNwjs() && windowWidth && windowHeight) {
