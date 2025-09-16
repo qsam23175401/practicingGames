@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="entry.css">
     <title>魔法師學院入口網站</title>
 
+    <script>
+        var fb = window.user || {};
+        fb.user = fb.user || {};
+    </script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
@@ -44,13 +48,13 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         const loginBtn = document.getElementById("loginBtn")
-        const loginText = document.getElementById("loginText");
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // user 物件範例： user.uid, user.email, user.displayName
-
-                loginBtn.textContent = `登出 (${user.displayName || user.email})`;
+                fb.user = user;
+                console.log(fb.user)
+                loginBtn.textContent = `歡迎 (${fb.user.displayName || fb.user.email}) 再按一次登出`;
                 // 將使用者資料寫到 Firestore（若不存在則建立）-----------------------尚未實作或建立
                 await ensureUserDoc(user.uid, user.displayName || user.email);
             } else {
@@ -60,9 +64,7 @@
 
 
 
-        loginText.addEventListener("click", () => {
-            loginText.textContent += ` ${user.displayName}`;
-        });
+
 
         loginBtn.addEventListener("click", async () => {
             if (auth.currentUser) {
@@ -83,6 +85,7 @@
 
 
 
+
     </script>
 
 </head>
@@ -93,28 +96,69 @@
         <h1>歡迎進入魔法師學校</h1>
 
         <div id="loginArea">
-            <p id="loginText">歡迎</p>
-            <button id="loginBtn">登入或註冊</button>
+            <button type="button" id="toggleNavBtn">隱藏或顯示按鈕列</button>
+            <button type="button" id="loginBtn">登入或註冊</button>
         </div>
     </header>
 
     <main>
-        <nav>
-            <button onclick="loadGame('intro.html')">首頁</button>
-            <button onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
-            <button>測試</button>
-
+        <nav id="leftsideArea">
+            <button id="fisrtBtn" onclick="loadGame('intro.html')">首頁</button>
+            <button id="puzzleGame" onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
+            <button id="test">測試</button>
         </nav>
 
         <section>
             <iframe id="gameFrame" src="intro.html"></iframe>
+            <div id="additionFunction"></div>
         </section>
     </main>
 
-    <script type="module">
+    <script>
+        //入口按鈕
+        const toggleNavBtn = document.getElementById("toggleNavBtn");
+        //遊戲按鈕
+        const fisrtBtn = document.querySelector("#fisrtBtn")
+        const puzzleGameBtn = document.querySelector("#puzzleGame")
+        const testBtn = document.getElementById("test");
+
+        //入口用函數
+        function toggleNav() {
+            const leftsideArea = document.getElementById("leftsideArea");
+            if (leftsideArea.style.display === "none") {
+                leftsideArea.style.display = "flex"; // 恢復
+            } else {
+                leftsideArea.style.display = "none";  // 隱藏
+            }
+        }
+
         function loadGame(url) {
             document.getElementById('gameFrame').src = url;
         }
+
+        function setAdditionFunction(){
+
+        }
+
+        //按鈕功能實作
+        toggleNavBtn.addEventListener("click", toggleNav)
+
+        fisrtBtn.addEventListener("click", () => {
+            loadGame('intro.html');
+        })
+
+        puzzleGameBtn.addEventListener("click", () => {
+            loadGame('puzzleGame/puzzleGame.html');
+            toggleNav();
+        })
+
+        testBtn.addEventListener("click", () => {
+            loadGame('runstory/runstory.html');
+            toggleNav();
+            setAdditionFunction();
+        })
+
+
 
 
 

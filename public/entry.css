@@ -28,16 +28,21 @@ h1 {
 #loginArea {
     margin: 0px;
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
     height: 35px;
     font-size: 13px;
 }
 
-#loginText {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    align-self: center;
-    width: 130px auto;
+#toggleNavBtn {
+    display: inline;
+    border: none;
+    background-color: transparent;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+#loginArea button:hover {
+    text-decoration: underline;
 }
 
 #loginBtn {
@@ -56,6 +61,8 @@ main {
 }
 
 nav {
+    display: flex;
+    flex-direction: column;
     width: 180px;
     background: rgb(66, 160, 26);
     padding: 0.5rem;
@@ -74,12 +81,31 @@ nav button {
     font-size: 15px;
 }
 
+nav button:hover {
+    background-color: #209510;
+}
+
 section {
     flex: 1;
     background-color: rgb(66, 160, 26);
+    display: flex;
+    flex-direction: column;
+    /* text-align: center; */
+    align-items: center;
+}
+
+#additionFunction {
+    background-color: rgb(66, 160, 26);
+    min-width: fit-content;
+    min-height: fit-content;
+    width: 0px;
+    height: 0px;
+    display: none;
+    flex-direction:row;
 }
 
 iframe {
+    flex: 1;
     width: 100%;
     height: 100%;
     border: none;
@@ -98,6 +124,7 @@ iframe {
         /* nav 撐滿螢幕上方 */
         min-height: fit-content;
         display: flex;
+        flex-direction: row;
         justify-content: space-around;
         /* 按鈕橫向排列 */
         overflow-x: auto;
