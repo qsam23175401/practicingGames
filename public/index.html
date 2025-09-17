@@ -8,8 +8,49 @@
     <title>魔法師學院入口網站</title>
 
     <script>
-        var fb = window.user || {};
-        fb.user = fb.user || {};
+        //建立使用者物件及遊戲資料
+
+        class RPGGameDatas {
+            constructor(name) {
+                this.RPGname = name;//字串
+                this.lastTime = Date.now();
+            }
+            setRPGData(key, data) {
+                if (typeof key === "string") {
+                    this[key] = data;
+                }
+            }
+            setRPGDatas(datas) {
+                datas.forEach(({ key, data }) => {
+                    this.setRPGData(key, data)
+                });
+            }
+        }
+
+        window.user = window.user || {
+            id: null,
+            displayName: null,
+            gamedatas: {},
+            setDisplayName(name) {
+                if (typeof (name) === "string") {
+                    this.displayName = name;
+                }
+            },
+            addRPGDatas(gameName, datas) { //datas=[{},{},...]
+                if (typeof gameName === "string" && Array.isArray(datas)) {
+                    if (!this.gamedatas.hasOwnProperty(gameName)) {
+                        this.gamedatas[gameName] = new RPGGameDatas(gameName);
+                        this.gamedatas[gameName].setRPGDatas(datas);
+                    } else {
+                        this.gamedatas[gameName].setRPGDatas(datas);
+                    }
+                } else {
+                    console.log(Array.isArray(datas))
+                    throw new Error("gameName必須是字串且datas=[{key,value},{},...]");
+                }
+
+            }
+        };
     </script>
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -52,19 +93,17 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // user 物件範例： user.uid, user.email, user.displayName
-                fb.user = user;
-                console.log(fb.user)
-                loginBtn.textContent = `歡迎 (${fb.user.displayName || fb.user.email}) 再按一次登出`;
+                window.user.id = user.uid;
+                window.user.displayName = user.displayName;
+
+                console.log(window.user)
+                loginBtn.textContent = `歡迎 (${window.user.displayName || "使用者"}) 再按一次登出`;
                 // 將使用者資料寫到 Firestore（若不存在則建立）-----------------------尚未實作或建立
-                await ensureUserDoc(user.uid, user.displayName || user.email);
+                await ensureUserDoc(user.uid, user.displayName);
             } else {
                 loginBtn.textContent = "登入或註冊";
             }
         });
-
-
-
-
 
         loginBtn.addEventListener("click", async () => {
             if (auth.currentUser) {
@@ -165,9 +204,9 @@
             }, 5000);
         }
 
-        function setAdditionFunction() {
+        function setFullscreenBtn() {
             if (window.innerWidth < 768) {
-                gameFrameFunctions.innerHTML = `
+                gameFrameFunctions.innerHTML += `
             <button id="fullscreenBtn">開啟全螢幕</button>
                `
             }
@@ -178,7 +217,6 @@
             }
             gameFrameFunctions.style.display = "flex";
             fullscreenPart.requestFullscreen();
-
         }
 
         //按鈕功能實作
@@ -196,9 +234,9 @@
         testGameBtn.domElement.addEventListener("click", () => {
             if (!testGameBtn.isLocked) {
                 setgameFrameText("手機請使用「以電腦版網頁」開啟\n可按下F11開關全螢幕");
-                loadGame('runstory/runstory.html');
                 toggleNav();
-                setAdditionFunction();
+                setFullscreenBtn();
+                loadGame('runstory/runstory.html');
                 testGameBtn.lock();
             } else {
                 testGameBtn.unlock();

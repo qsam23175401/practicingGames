@@ -331,7 +331,7 @@ DataManager.loadSavefileImages = function(info) {
 };
 
 DataManager.maxSavefiles = function() {
-    return 20;
+    return 10;
 };
 
 DataManager.saveGame = function(savefileId) {
@@ -723,6 +723,8 @@ StorageManager.saveToWebStorage = function(savefileId, json) {
     var key = this.webStorageKey(savefileId);
     var data = LZString.compressToBase64(json);
     localStorage.setItem(key, data);
+    //加到自己的window.user.gamedatas
+    window.parent.user.addRPGDatas("runstory",[{key, data}]);
 };
 
 StorageManager.loadFromWebStorage = function(savefileId) {
@@ -775,9 +777,9 @@ StorageManager.webStorageKey = function(savefileId) {
     if (savefileId < 0) {
         return 'RPG Config';
     } else if (savefileId === 0) {
-        return 'RPG Global';
+        return 'RPG test Global';
     } else {
-        return 'RPG File%1'.format(savefileId);
+        return 'RPG test File%1'.format(savefileId);
     }
 };
 
