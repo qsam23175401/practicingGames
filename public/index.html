@@ -106,21 +106,42 @@
             <button id="fisrtBtn" onclick="loadGame('intro.html')">首頁</button>
             <button id="puzzleGame" onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
             <button id="test">測試</button>
+
         </nav>
 
-        <section>
+        <section id="fullscreenPart">
+            <p id="iframeUpperText"></p>
             <iframe id="gameFrame" src="intro.html"></iframe>
             <div id="additionFunction"></div>
         </section>
     </main>
 
     <script>
+        //包裝按鈕功能
+        class GameButton {
+            constructor(domElement) {
+                this.domElement = domElement;
+                this.isLocked = false;
+            }
+            lock() {
+                this.isLocked = true;
+            }
+            unlock() {
+                this.isLocked = false;
+            }
+        }
+
         //入口按鈕
         const toggleNavBtn = document.getElementById("toggleNavBtn");
         //遊戲按鈕
         const fisrtBtn = document.querySelector("#fisrtBtn")
         const puzzleGameBtn = document.querySelector("#puzzleGame")
-        const testBtn = document.getElementById("test");
+        const testGameBtn = new GameButton(document.getElementById("test"));
+
+        //gameFrame、上下文字及功能區
+        const gameFrameText = document.getElementById("iframeUpperText");
+        const gameFrameFunctions = document.getElementById("additionFunction");
+        let fullscreenPart = document.getElementById("gameFrame");
 
         //入口用函數
         function toggleNav() {
@@ -136,7 +157,27 @@
             document.getElementById('gameFrame').src = url;
         }
 
-        function setAdditionFunction(){
+        function setgameFrameText(textTOShow) {
+            gameFrameText.textContent = textTOShow;
+            gameFrameText.style.display = "flex";
+            setInterval(() => {
+                gameFrameText.style.display = "none";
+            }, 5000);
+        }
+
+        function setAdditionFunction() {
+            if (window.innerWidth < 768) {
+                gameFrameFunctions.innerHTML = `
+            <button id="fullscreenBtn">開啟全螢幕</button>
+               `
+            }
+            if (document.getElementById("fullscreenBtn")) {
+                document.getElementById("fullscreenBtn").addEventListener("click", () => {
+                    fullscreenPart.requestFullscreen();
+                })
+            }
+            gameFrameFunctions.style.display = "flex";
+            fullscreenPart.requestFullscreen();
 
         }
 
@@ -152,13 +193,18 @@
             toggleNav();
         })
 
-        testBtn.addEventListener("click", () => {
-            loadGame('runstory/runstory.html');
-            toggleNav();
-            setAdditionFunction();
+        testGameBtn.domElement.addEventListener("click", () => {
+            if (!testGameBtn.isLocked) {
+                setgameFrameText("手機請使用「以電腦版網頁」開啟\n可按下F11開關全螢幕");
+                loadGame('runstory/runstory.html');
+                toggleNav();
+                setAdditionFunction();
+                testGameBtn.lock();
+            } else {
+                testGameBtn.unlock();
+                setgameFrameText("請再按一次更新遊戲");
+            }
         })
-
-
 
 
 
