@@ -122,6 +122,9 @@ section {
     border: black solid;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: 2px;
+    margin-left: 2px;
+
 }
 
 #additionFunction button:hover{

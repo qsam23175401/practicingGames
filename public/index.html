@@ -150,7 +150,7 @@
 
         <section id="fullscreenPart">
             <p id="iframeUpperText"></p>
-            <iframe id="gameFrame" src="intro.html"></iframe>
+            <iframe id="gameFrame" src="intro.html" name="intro"></iframe>
             <div id="additionFunction"></div>
         </section>
     </main>
@@ -180,6 +180,7 @@
         //gameFrame、上下文字及功能區
         const gameFrameText = document.getElementById("iframeUpperText");
         const gameFrameFunctions = document.getElementById("additionFunction");
+        const gameFrame = document.getElementById("gameFrame");
         let fullscreenPart = document.getElementById("gameFrame");
 
         //入口用函數
@@ -193,9 +194,11 @@
         }
 
         function loadGame(url) {
-            document.getElementById('gameFrame').src = url;
+            gameFrame.src = url;
         }
 
+
+        //gameFrame功能相關
         function setgameFrameText(textTOShow) {
             gameFrameText.textContent = textTOShow;
             gameFrameText.style.display = "flex";
@@ -204,39 +207,65 @@
             }, 5000);
         }
 
+        function BtnHTMLTag(id, textContent) {
+            if (typeof id === "string" && typeof textContent === "string") {
+                return `<button type="button" id="${id}">${textContent}</button>`
+            } else { throw new Error("button id,textContent必須為字串") }
+        }
+
         function setFullscreenBtn() {
-            if (window.innerWidth < 768) {
-                gameFrameFunctions.innerHTML += `
-            <button id="fullscreenBtn">開啟全螢幕</button>
-               `
-            }
-            if (document.getElementById("fullscreenBtn")) {
+            if (window.innerWidth < 768 && !document.getElementById("fullscreenBtn")) {
+                gameFrameFunctions.insertAdjacentHTML("beforeend", BtnHTMLTag("fullscreenBtn", "開啟全螢幕"))
                 document.getElementById("fullscreenBtn").addEventListener("click", () => {
                     fullscreenPart.requestFullscreen();
+                    console.log("clicked")
                 })
             }
             gameFrameFunctions.style.display = "flex";
+            //還沒測試手機會怎樣
             fullscreenPart.requestFullscreen();
         }
 
-        //按鈕功能實作
+        function setRPGSaveBtn() {
+            //尚未設定時間限制
+            gameFrameFunctions.insertAdjacentHTML("beforeend", BtnHTMLTag("RPGSaveBtn", "上傳存檔"))
+            document.getElementById("RPGSaveBtn").addEventListener("click", () => {
+                switch (gameFrame.name) {
+                    case "runstory":
+                        //準備實作與資料庫連結
+                        break;
+                    case "test":
+                        break;
+                }
+            })
+        }
+
+
+
+        //入口按鈕功能實作
         toggleNavBtn.addEventListener("click", toggleNav)
 
         fisrtBtn.addEventListener("click", () => {
             loadGame('intro.html');
+            gameFrame.name = "intro"
         })
 
         puzzleGameBtn.addEventListener("click", () => {
             loadGame('puzzleGame/puzzleGame.html');
             toggleNav();
+            gameFrame.name = "puzzleGame"
         })
 
         testGameBtn.domElement.addEventListener("click", () => {
             if (!testGameBtn.isLocked) {
                 setgameFrameText("手機請使用「以電腦版網頁」開啟\n可按下F11開關全螢幕");
                 toggleNav();
+                //設定特殊按鈕們
                 setFullscreenBtn();
+                setRPGSaveBtn();
+
                 loadGame('runstory/runstory.html');
+                gameFrame.name = "runstory"
                 testGameBtn.lock();
             } else {
                 testGameBtn.unlock();
