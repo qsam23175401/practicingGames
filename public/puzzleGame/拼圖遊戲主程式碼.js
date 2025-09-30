@@ -16,6 +16,8 @@ const hintBtn = document.getElementById("hintBtn");
 const shiftBtn = document.getElementById("shiftBtn");
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+const uploadInput = document.getElementById("uploadInput");
 let canvasBgd = document.getElementById("playBgd")//ID才是唯一.className會抓陣列
 let ctx = canvasBgd.getContext("2d");
 
@@ -110,25 +112,51 @@ function setWandH(width = 400, height = 320) {
 }
 
 function imgSize(targetPic, i) {
-    let size = []
+    const url = targetPic.src;
+    const isSvgz = url.endsWith('.svgz');
+
     return new Promise((resolve, reject) => {
-        if (targetPic.complete) {
-            // 如果圖片已經載入完成
-            size[0] = targetPic.width;
-            size[1] = targetPic.height;
-            picSize[i] = size;
-            resolve();
+        if (isSvgz) {
+            // --- 處理 .svgz 檔案 ---
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('無法獲取 .svgz 檔案');
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(compressedData => {
+                    // 使用 pako 解壓縮
+                    const decompressedData = pako.inflate(compressedData, { to: 'string' });
+                    const svgBlob = new Blob([decompressedData], { type: 'image/svg+xml' });
+                    const objectURL = URL.createObjectURL(svgBlob);
+                    
+                    const img = new Image();
+                    img.onload = () => {
+                        picSize[i] = [img.width, img.height];
+                        // 【重要】將原始 <img> 的 src 替換為解壓縮後的版本
+                        targetPic.src = objectURL; 
+                        resolve();
+                    };
+                    img.onerror = () => reject("解壓縮後的 SVG 載入失敗: " + url);
+                    img.src = objectURL;
+                })
+                .catch(err => reject("處理 .svgz 失敗: " + err));
+
         } else {
-            // 等待圖片載入完成
-            targetPic.onload = () => {
-                size[0] = targetPic.width;
-                size[1] = targetPic.height;
-                picSize[i] = size;
+            // --- 處理一般圖片 (svg, png, jpg...) ---
+            if (targetPic.complete) {
+                picSize[i] = [targetPic.width, targetPic.height];
                 resolve();
-            };
-            targetPic.onerror = () => reject("圖片載入失敗: " + targetPic.src);
+            } else {
+                targetPic.onload = () => {
+                    picSize[i] = [targetPic.width, targetPic.height];
+                    resolve();
+                };
+                targetPic.onerror = () => reject("圖片載入失敗: " + url);
+            }
         }
-    })
+    });
 }
 
 function justfyPic(i) {
@@ -210,6 +238,9 @@ function drawOne(index, si, di) {
 }
 
 function drawAll() {
+    // 在重繪所有拼圖塊之前，先清空整個畫布
+    ctx.clearRect(0, 0, difficulty.width, difficulty.height);
+
     for (let i = 0; i < pxpy; i++) {
         drawOne(picIndex, i, parseInt(piecePos[i]))
     }
@@ -225,7 +256,68 @@ function changeTwo(p1, p2) {
     drawAll();
 }
 
+// --- 新增上傳圖片相關功能 ---
+
+// 將上傳的圖片加到遊戲中
+function addUserUploadedImage(file) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        const newPicId = "pic" + NumOfPics;
+        const newImg = document.createElement('img');
+        newImg.id = newPicId;
+        newImg.className = 'pictures';
+        newImg.src = e.target.result;
+        newImg.style.opacity = 0; // 保持隱藏
+
+        // 將新圖片元素加入到 playArea，這樣 targetPic 才能找到它
+        playArea.appendChild(newImg);
+
+        // 更新圖片總數
+        NumOfPics++;
+
+        // 重新初始化以載入新圖片
+        sysText("正在處理上傳的圖片...", false);
+        imgSize(newImg, NumOfPics - 1).then(() => {
+            justfyPic(NumOfPics - 1);
+            // 切換到新上傳的圖片
+            cutPic(picIndex);
+            picIndex = NumOfPics - 1;
+            showPic(picIndex);
+            sysText("圖片上傳成功！");
+        }).catch(error => {
+            console.error(error);
+            sysText("圖片處理失敗，請確認圖片格式。");
+            // 如果失敗，還原圖片數量
+            NumOfPics--;
+            playArea.removeChild(newImg);
+        });
+    }
+
+    reader.readAsDataURL(file);
+}
+
+
 //按鈕區程式碼
+
+uploadBtn.addEventListener("click", () => {
+    if (started) {
+        sysText("遊戲進行中，無法上傳新圖片。");
+        return;
+    }
+    // 觸發隱藏的 input 點擊事件
+    uploadInput.click();
+});
+
+uploadInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        addUserUploadedImage(file);
+    }
+    // 清空 input 的值，這樣使用者才能重複上傳同一張圖片
+    event.target.value = '';
+});
+
 
 difficultyBtn.addEventListener("click", () => {
     if (!started) {
@@ -290,6 +382,35 @@ resetBtn.addEventListener("click", () => {
         sysText("重置拼圖，請再重選拼圖");
         init_piecePos();
         myGame.putPieces();
+    }
+});
+
+//增加即時變動大小，但必須重新洗牌
+playAreaWidth.addEventListener("change", () => {
+    if (!initialized) {
+        sysText("請稍等圖片載入", false)
+    } else if (started) {
+        started = false;
+        showPic(picIndex);
+        choosed = 0;
+        sysText("變更畫布大小，請再按下開始遊戲");
+        setWandH(playAreaWidth.value, playAreaWidth.value / 1.25);
+        create_myGame();
+        init_piecePos();
+        playArea.style.width = String(difficulty.width) + "px";
+        playArea.style.height = String(difficulty.height) + "px";
+        for (let i = 0; i < NumOfPics; i++) {
+            justfyPic(i);
+        }
+    }else{
+        setWandH(playAreaWidth.value, playAreaWidth.value / 1.25);
+        create_myGame();
+        init_piecePos();
+        playArea.style.width = String(difficulty.width) + "px";
+        playArea.style.height = String(difficulty.height) + "px";
+        for (let i = 0; i < NumOfPics; i++) {
+            justfyPic(i);
+        }
     }
 });
 

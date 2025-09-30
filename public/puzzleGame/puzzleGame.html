@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="拼圖遊戲樣式表.css">
     <!-- 載入 p5.js 函式庫（核心程式庫） -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+    <!-- 【新增】載入 pako.js 用於解壓縮 svgz -->
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
     <script src="拼圖遊戲畫布.js"></script>
     <script>
         //console.log(window.parent.fb.user)
@@ -24,11 +26,11 @@
     <!-- 遊戲區，圖片及畫布 -->
     <div class="AppBody">
         <div id="playArea" class="playArea">
-            <img id="pic0" class="pictures" src="lions.webp" alt="獅子拼圖現在似乎無法開啟">
-            <img id="pic1" class="pictures" src="cats.webp" alt="貓咪拼圖現在似乎無法開啟">
-            <img id="pic2" class="pictures" src="pokemon1.webp" alt="寶可夢拼圖現在似乎無法開啟">
-            <img id="pic3" class="pictures" src="pokemon2.webp" alt="寶可夢拼圖現在似乎無法開啟">
-            <img id="pic4" class="pictures" src="hellokitty1.webp" alt="kitty拼圖現在似乎無法開啟">
+            <img id="pic0" class="pictures" src="lions.svgz" alt="獅子拼圖現在似乎無法開啟">
+            <img id="pic1" class="pictures" src="rabbit1.svgz" alt="兔子拼圖現在似乎無法開啟">
+            <img id="pic2" class="pictures" src="frog.svgz" alt="青蛙拼圖現在似乎無法開啟">
+            <img id="pic3" class="pictures" src="rabbit2.svgz" alt="兔子拼圖現在似乎無法開啟">
+            <img id="pic4" class="pictures" src="elephants.svgz" alt="大象拼圖現在似乎無法開啟">
             <canvas id="playBgd" class="playBgd"></canvas>
         </div>
     </div>
@@ -41,7 +43,11 @@
         <button id="shiftBtn" class="buttons" type="button">切換拼圖</button>
         <button id="resetBtn" class="buttons" type="button">重置拼圖</button>
         <button id="hintBtn" class="buttons" type="button">提示</button>
+        <button id="uploadBtn" class="buttons" type="button">上傳圖片</button>
     </div>
+
+    <!-- 隱藏的上傳用 input -->
+    <input type="file" id="uploadInput" accept="image/*" style="display: none;">
 
     <!-- 大小調整區 -->
     <div class="playAreaWidth">

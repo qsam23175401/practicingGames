@@ -7,9 +7,12 @@
     <link rel="stylesheet" href="entry.css">
     <title>魔法師學院入口網站</title>
 
-    <script>
-        //建立使用者物件及遊戲資料
+    <!-- 跨HTML遊戲互動與雲端功能，登入按鈕，資料庫 -->
+    <script type="module" src="js/firebase.js"></script>
 
+    <script>
+
+        //建立使用者物件及遊戲資料 中介層
         class RPGGameDatas {
             constructor(name) {
                 this.RPGname = name;//字串
@@ -52,85 +55,12 @@
             }
         };
     </script>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import {
-            getAuth,
-            GoogleAuthProvider,
-            signInWithPopup,
-            signOut,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            setDoc,
-            updateDoc
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyCCIT70yei8qVk2j3_5l-kDE4b1XZCemos",
-            authDomain: "magicianacademy.firebaseapp.com",
-            projectId: "magicianacademy",
-            storageBucket: "magicianacademy.firebasestorage.app",
-            messagingSenderId: "1004595658126",
-            appId: "1:1004595658126:web:b4f3a0014581fc7fa478df",
-            measurementId: "G-LZS9ZCRCSC"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const loginBtn = document.getElementById("loginBtn")
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // user 物件範例： user.uid, user.email, user.displayName
-                window.user.id = user.uid;
-                window.user.displayName = user.displayName;
-
-                console.log(window.user)
-                loginBtn.textContent = `歡迎 (${window.user.displayName || "使用者"}) 再按一次登出`;
-                // 將使用者資料寫到 Firestore（若不存在則建立）-----------------------尚未實作或建立
-                await ensureUserDoc(user.uid, user.displayName);
-            } else {
-                loginBtn.textContent = "登入或註冊";
-            }
-        });
-
-        loginBtn.addEventListener("click", async () => {
-            if (auth.currentUser) {
-                // 已登入 -> 登出
-                await signOut(auth);
-                alert("已登出");
-            } else {
-                // 未登入 -> 開 Google popup
-                const provider = new GoogleAuthProvider();
-                try {
-                    await signInWithPopup(auth, provider);
-                } catch (err) {
-                    console.error("登入失敗：", err);
-                    alert("登入失敗，請看 console");
-                }
-            }
-        });
-
-
-
-
-    </script>
 
 </head>
 
 <body>
-
+    <!-- 網頁本體 -->
     <header>
         <h1>歡迎進入魔法師學校</h1>
 
@@ -145,9 +75,8 @@
             <button id="fisrtBtn" onclick="loadGame('intro.html')">首頁</button>
             <button id="puzzleGame" onclick="loadGame('puzzleGame/puzzleGame.html')">拼圖遊戲</button>
             <button id="test">測試</button>
-
         </nav>
-
+        
         <section id="fullscreenPart">
             <p id="iframeUpperText"></p>
             <iframe id="gameFrame" src="intro.html" name="intro"></iframe>
@@ -155,127 +84,32 @@
         </section>
     </main>
 
-    <script>
-        //包裝按鈕功能
-        class GameButton {
-            constructor(domElement) {
-                this.domElement = domElement;
-                this.isLocked = false;
-            }
-            lock() {
-                this.isLocked = true;
-            }
-            unlock() {
-                this.isLocked = false;
-            }
-        }
+    <!-- 屬於入口網頁而已的程式碼 -->
+    <script src="js/index.js"></script>
 
-        //入口按鈕
-        const toggleNavBtn = document.getElementById("toggleNavBtn");
-        //遊戲按鈕
-        const fisrtBtn = document.querySelector("#fisrtBtn")
-        const puzzleGameBtn = document.querySelector("#puzzleGame")
-        const testGameBtn = new GameButton(document.getElementById("test"));
 
-        //gameFrame、上下文字及功能區
-        const gameFrameText = document.getElementById("iframeUpperText");
-        const gameFrameFunctions = document.getElementById("additionFunction");
-        const gameFrame = document.getElementById("gameFrame");
-        let fullscreenPart = document.getElementById("gameFrame");
+    <!-- 測試這個模組
+    <script type="module">
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-functions.js";
 
-        //入口用函數
-        function toggleNav() {
-            const leftsideArea = document.getElementById("leftsideArea");
-            if (leftsideArea.style.display === "none") {
-                leftsideArea.style.display = "flex"; // 恢復
-            } else {
-                leftsideArea.style.display = "none";  // 隱藏
+        const functions = getFunctions();
+        const saveGameData = httpsCallable(functions, "saveGameData");
+
+        export async function uploadSave() {
+            try {
+                const result = await saveGameData({
+                    userId: window.user.id,
+                    gamedatas: window.user.gamedatas,
+                });
+
+                console.log(result.data.message);
+            } catch (err) {
+                console.error("存檔錯誤:", err.message);
             }
         }
+        window.uploadSave = uploadSave();
 
-        function loadGame(url) {
-            gameFrame.src = url;
-        }
-
-
-        //gameFrame功能相關
-        function setgameFrameText(textTOShow) {
-            gameFrameText.textContent = textTOShow;
-            gameFrameText.style.display = "flex";
-            setInterval(() => {
-                gameFrameText.style.display = "none";
-            }, 5000);
-        }
-
-        function BtnHTMLTag(id, textContent) {
-            if (typeof id === "string" && typeof textContent === "string") {
-                return `<button type="button" id="${id}">${textContent}</button>`
-            } else { throw new Error("button id,textContent必須為字串") }
-        }
-
-        function setFullscreenBtn() {
-            if (window.innerWidth < 768 && !document.getElementById("fullscreenBtn")) {
-                gameFrameFunctions.insertAdjacentHTML("beforeend", BtnHTMLTag("fullscreenBtn", "開啟全螢幕"))
-                document.getElementById("fullscreenBtn").addEventListener("click", () => {
-                    fullscreenPart.requestFullscreen();
-                    console.log("clicked")
-                })
-            }
-            gameFrameFunctions.style.display = "flex";
-            //還沒測試手機會怎樣
-            fullscreenPart.requestFullscreen();
-        }
-
-        function setRPGSaveBtn() {
-            //尚未設定時間限制
-            gameFrameFunctions.insertAdjacentHTML("beforeend", BtnHTMLTag("RPGSaveBtn", "上傳存檔"))
-            document.getElementById("RPGSaveBtn").addEventListener("click", () => {
-                switch (gameFrame.name) {
-                    case "runstory":
-                        //準備實作與資料庫連結
-                        break;
-                    case "test":
-                        break;
-                }
-            })
-        }
-
-
-
-        //入口按鈕功能實作
-        toggleNavBtn.addEventListener("click", toggleNav)
-
-        fisrtBtn.addEventListener("click", () => {
-            loadGame('intro.html');
-            gameFrame.name = "intro"
-        })
-
-        puzzleGameBtn.addEventListener("click", () => {
-            loadGame('puzzleGame/puzzleGame.html');
-            toggleNav();
-            gameFrame.name = "puzzleGame"
-        })
-
-        testGameBtn.domElement.addEventListener("click", () => {
-            if (!testGameBtn.isLocked) {
-                setgameFrameText("手機請使用「以電腦版網頁」開啟\n可按下F11開關全螢幕");
-                toggleNav();
-                //設定特殊按鈕們
-                setFullscreenBtn();
-                setRPGSaveBtn();
-
-                loadGame('runstory/runstory.html');
-                gameFrame.name = "runstory"
-                testGameBtn.lock();
-            } else {
-                testGameBtn.unlock();
-                setgameFrameText("請再按一次更新遊戲");
-            }
-        })
-
-
-
-    </script>
+    </script> -->
 </body>
 
 </html>

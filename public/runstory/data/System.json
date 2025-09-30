@@ -145,19 +145,16 @@
         false,
         true
     ],
-    "optDisplayTp": true,
+    "optDisplayTp": false,
     "optDrawTitle": true,
     "optExtraExp": false,
     "optFloorDeath": false,
-    "optFollowers": true,
+    "optFollowers": false,
     "optSideView": false,
     "optSlipDeath": false,
     "optTransparent": false,
     "partyMembers": [
-        1,
-        2,
-        3,
-        4
+        1
     ],
     "ship": {
         "bgm": {
@@ -534,7 +531,7 @@
         "",
         ""
     ],
-    "versionId": 28119754,
+    "versionId": 84075441,
     "victoryMe": {
         "name": "Victory1",
         "pan": 0,
